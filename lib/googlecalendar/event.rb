@@ -81,6 +81,7 @@ module GoogleCalendar
   #
   # * this class doesn't support recurring event.
   #
+  require 'uri'
 
   class Event
     ATTRIBUTES_MAP = {
@@ -88,7 +89,10 @@ module GoogleCalendar
       "desc" => { "element" => "content"},
       "where" => { "element" => "gd:where", "attribute" => "valueString" },
       "st" => { "element" => "gd:when", "attribute" => "startTime", "to_xml" => "time_to_str", "from_xml" => "str_to_time" },
-      "en" => { "element" => "gd:when", "attribute" => "endTime", "to_xml" => "time_to_str", "from_xml" => "str_to_time" }
+      "en" => { "element" => "gd:when", "attribute" => "endTime", "to_xml" => "time_to_str", "from_xml" => "str_to_time" },
+      "eventStatus" => { "element" => "gd:eventStatus", "attribute" => "value", "to_xml" => "frag_to_xml", "from_xml" => "frag_from_xml"  },
+      "visibility" => { "element" => "gd:visibility", "attribute" => "value", "to_xml" => "frag_to_xml", "from_xml" => "frag_from_xml"  }
+
     }
 
     SKELTON = <<XML
@@ -102,11 +106,21 @@ module GoogleCalendar
 </entry>
 XML
 
-    attr_accessor :allday, :feed, :srv, :status, :where, :title, :desc, :st, :en, :xml
+    attr_accessor :allday, :feed, :srv, :status, :where, :title, :desc, :st, :en, :xml, :eventStatus, :visibility
 
     def initialize()
       @xml = nil
       self.status = :new
+    end
+
+    def frag_to_xml(str)
+      uri = URI.parse("http://schemas.google.com/g/2005")
+      uri.fragment = str
+      uri.to_s
+    end
+    def frag_from_xml(str)
+      uri = URI.parse(str)
+      uri.fragment
     end
     
     # load xml into this instance
