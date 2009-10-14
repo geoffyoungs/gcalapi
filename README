@@ -1,0 +1,13 @@
+= GoogleCalendar -- Google Calendar API
+
+== Installation
+
+ # gem install gcalapi
+
+== License
+
+This library is public domain software and provided without warranty of any kind.
+
+== Author
+
+zoriorz@gmail.com
